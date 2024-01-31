@@ -4,11 +4,17 @@ import (
 	"database/sql"
 )
 
+var _ Repository = (*SqlDataSource)(nil) // Validate interface compliance on compile time
+
 type SqlDataSource struct {
-	DB *sql.DB
+	db *sql.DB
 }
 
-var _ Repository = (*SqlDataSource)(nil) // Validate interface compliance on compile time
+func NewSqlDataSource(db *sql.DB) SqlDataSource {
+	return SqlDataSource{
+		db: db,
+	}
+}
 
 func (ri SqlDataSource) GetByID(id int64) (account Account, err error) {
 	query := `
@@ -25,7 +31,7 @@ func (ri SqlDataSource) GetByID(id int64) (account Account, err error) {
 			a.id = $1
 			AND a.deleted_at IS NULL
 	`
-	row := ri.DB.QueryRow(query, id)
+	row := ri.db.QueryRow(query, id)
 
 	if row.Err() != nil {
 		err = row.Err()
@@ -56,7 +62,7 @@ func (ri SqlDataSource) GetAll() (accounts []Account, err error) {
 		WHERE
 			a.deleted_at IS NULL
 	`
-	rows, err := ri.DB.Query(query)
+	rows, err := ri.db.Query(query)
 	if err != nil {
 		return
 	}
