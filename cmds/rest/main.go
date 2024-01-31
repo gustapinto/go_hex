@@ -1,14 +1,11 @@
 package main
 
 import (
-	"context"
-	"encoding/json"
+	"github.com/gustapinto/go_hex/cmds/rest/route/ping"
+	"github.com/gustapinto/go_hex/pkg/httputil"
 	"log/slog"
 	"net/http"
 	"os"
-	"strings"
-	"github.com/gustapinto/go_hex/cmds/rest/handler"
-	"github.com/gustapinto/go_hex/pkg/rest"
 )
 
 const (
@@ -18,10 +15,7 @@ const (
 func main() {
 	mux := http.NewServeMux()
 
-	ping := handler.Ping{}
-	{
-		mux.HandleFunc("GET /v1/ping", LogRequest(ping.Pong))
-	}
+	mux.HandleFunc("GET /v1/ping", httputil.Log(ping.Pong))
 
 	slog.Info("Starting HTTP server", "address", ServerAddress)
 
