@@ -1,8 +1,8 @@
 package httputil
 
 import (
-	"net/http"
 	"log/slog"
+	"net/http"
 )
 
 func Log(next http.HandlerFunc) http.HandlerFunc {

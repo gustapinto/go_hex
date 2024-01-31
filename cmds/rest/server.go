@@ -5,7 +5,6 @@ import (
 	"github.com/gustapinto/go_hex/pkg/httputil"
 	"log/slog"
 	"net/http"
-	"os"
 )
 
 const (
