@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/gustapinto/go_hex/cmds/rest/route/ping"
-	"github.com/gustapinto/go_hex/pkg/httputil"
 	"log/slog"
 	"net/http"
+
+	"github.com/gustapinto/go_hex/cmds/rest/route/ping"
+	"github.com/gustapinto/go_hex/pkg/httputil"
 )
 
 const (

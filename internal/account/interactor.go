@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-type Service struct {
+type Interactor struct {
 	Repository Repository
 }
 
@@ -15,7 +15,7 @@ var (
 	ErrInternal = "error.account.internal: %s"
 )
 
-func (s Service) GetByID(id int64) (account Account, err error) {
+func (s Interactor) GetByID(id int64) (account Account, err error) {
 	account, err = s.Repository.GetByID(id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -27,7 +27,7 @@ func (s Service) GetByID(id int64) (account Account, err error) {
 	return
 }
 
-func (s Service) GetAll() (accounts []Account, total int64, err error) {
+func (s Interactor) GetAll() (accounts []Account, total int64, err error) {
 	accounts, err = s.Repository.GetAll()
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {

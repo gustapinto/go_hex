@@ -1,6 +1,6 @@
 module github.com/gustapinto/go_hex/cmds/rest
 
-go 1.22rc1
+go 1.21.5
 
 replace github.com/gustapinto/go_hex/pkg => ../../pkg
 
