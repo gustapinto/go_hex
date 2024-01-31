@@ -1,6 +1,11 @@
 package httputil
 
-func LogRequest(next http.HandlerFunc) http.HandlerFunc {
+import (
+	"net/http"
+	"log/slog"
+)
+
+func Log(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		next(w, r)
 
