@@ -1,0 +1,20 @@
+{
+    "folders": [
+        {
+            "name": "rest",
+            "path": "cmds/rest"
+        },
+        {
+            "name": "internal",
+            "path": "./internal"
+        },
+        {
+            "name": "pkg",
+            "path": "./pkg"
+        },
+        {
+            "name": "go_rest",
+            "path": "."
+        }
+    ]
+}
