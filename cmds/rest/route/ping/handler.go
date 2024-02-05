@@ -1,8 +1,9 @@
 package ping
 
 import (
-	"github.com/gustapinto/go_hex/pkg/httputil"
 	"net/http"
+
+	"github.com/gustapinto/go_hex/pkg/httputil"
 )
 
 func Pong(w http.ResponseWriter, r *http.Request) {
