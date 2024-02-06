@@ -7,6 +7,31 @@ import (
 	"strings"
 )
 
+type Mux struct {
+	mux *http.ServeMux
+}
+
+func NewMux() *Mux {
+	return &Mux{
+		mux: http.NewServeMux(),
+	}
+}
+
+func (m Mux) Listen(addr string) error {
+	return http.ListenAndServe(addr, m.mux)
+}
+
+func (m Mux) HandleFunc(method, pattern string, handler http.HandlerFunc) {
+	m.mux.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != method {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			return
+		}
+
+		handler(w, r)
+	})
+}
+
 func BindJson(w http.ResponseWriter, r *http.Request, target any) error {
 	contentType := r.Header.Get(ContentTypeHeader)
 

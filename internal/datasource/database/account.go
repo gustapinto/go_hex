@@ -1,22 +1,25 @@
-package account
+package database
 
 import (
 	"database/sql"
+
+	"github.com/gustapinto/go_hex/internal/core/entity"
+	"github.com/gustapinto/go_hex/internal/core/repository"
 )
 
-var _ Repository = (*SqlDataSource)(nil) // Validate interface compliance on compile time
+var _ repository.Account = (*Account)(nil) // Validate interface compliance on compile time
 
-type SqlDataSource struct {
+type Account struct {
 	db *sql.DB
 }
 
-func NewSqlDataSource(db *sql.DB) SqlDataSource {
-	return SqlDataSource{
+func NewAccount(db *sql.DB) Account {
+	return Account{
 		db: db,
 	}
 }
 
-func (ri SqlDataSource) GetByID(id int64) (account Account, err error) {
+func (ri Account) GetByID(id int64) (account entity.Account, err error) {
 	query := `
 		SELECT
 			a.id,
@@ -48,7 +51,7 @@ func (ri SqlDataSource) GetByID(id int64) (account Account, err error) {
 	return
 }
 
-func (ri SqlDataSource) GetAll() (accounts []Account, err error) {
+func (ri Account) GetAll() (accounts []entity.Account, err error) {
 	query := `
 		SELECT
 			a.id,
@@ -68,7 +71,7 @@ func (ri SqlDataSource) GetAll() (accounts []Account, err error) {
 	}
 
 	for rows.Next() {
-		var account Account
+		var account entity.Account
 		err = rows.Scan(
 			&account.ID,
 			&account.Name,
@@ -85,32 +88,27 @@ func (ri SqlDataSource) GetAll() (accounts []Account, err error) {
 	return
 }
 
-func (ri SqlDataSource) Count() (total int64, err error) {
+func (ri Account) Create(name string, initialValue float64) (id int64, err error) {
 	// TODO
 	return
 }
 
-func (ri SqlDataSource) Create(name string, initialValue float64) (id int64, err error) {
-	// TODO
-	return
-}
-
-func (ri SqlDataSource) UpdateByID(id int64, name string, currentValue float64) error {
+func (ri Account) UpdateByID(id int64, name string, currentValue float64) error {
 	// TODO
 	return nil
 }
 
-func (ri SqlDataSource) SumToCurrentValue(id int64, value float64) error {
+func (ri Account) SumToCurrentValueByID(id int64, value float64) error {
 	// TODO
 	return nil
 }
 
-func (ri SqlDataSource) SubtractFromCurrentValue(id int64, value float64) error {
+func (ri Account) SubtractFromCurrentValueByID(id int64, value float64) error {
 	// TODO
 	return nil
 }
 
-func (ri SqlDataSource) DeleteByID(id int64) error {
+func (ri Account) DeleteByID(id int64) error {
 	// TODO
 	return nil
 }
