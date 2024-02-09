@@ -13,7 +13,6 @@ type Account struct {
 	CurrentValue float64   `json:"current_value"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
-	DeletedAt    time.Time `json:"deleted_at"`
 }
 
 func NewAccountFromEntity(account entity.Account) Account {
@@ -24,7 +23,6 @@ func NewAccountFromEntity(account entity.Account) Account {
 		CurrentValue: account.CurrentValue,
 		CreatedAt:    account.CreatedAt,
 		UpdatedAt:    account.UpdatedAt,
-		DeletedAt:    account.DeletedAt,
 	}
 }
 

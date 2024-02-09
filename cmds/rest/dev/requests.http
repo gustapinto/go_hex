@@ -1,0 +1,31 @@
+# @name GetAccounts
+GET http://localhost:8080/v1/accounts
+###
+
+# @name GetAccountByID
+GET http://localhost:8080/v1/accounts/1
+###
+
+# @name CreateAccount
+POST http://localhost:8080/v1/accounts
+Content-Type: application/json
+
+{
+    "name": "Foo",
+    "initial_value": 10
+}
+###
+
+# @name UpdateAccountByID
+PUT http://localhost:8080/v1/accounts/1
+Content-Type: application/json
+
+{
+    "name": "Foo",
+    "current_value": 5
+}
+###
+
+# @name DeleteAccountByID
+DELETE http://localhost:8080/v1/accounts/1
+###

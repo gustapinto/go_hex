@@ -2,7 +2,6 @@ package handler
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/gustapinto/go_hex/cmds/rest/dto/request"
 	"github.com/gustapinto/go_hex/cmds/rest/dto/response"
@@ -46,9 +45,8 @@ func (ac Account) Get(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ac Account) GetByID(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.ParseInt(r.PathValue("id"), 10, 0)
+	id, err := httputil.PathValueInt64(w, r, "id")
 	if err != nil {
-		httputil.WriteJson(w, r, http.StatusBadRequest, httputil.NewErrorResponse(err))
 		return
 	}
 
@@ -67,9 +65,8 @@ func (ac Account) UpdateByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := strconv.ParseInt(r.PathValue("id"), 10, 0)
+	id, err := httputil.PathValueInt64(w, r, "id")
 	if err != nil {
-		httputil.WriteJson(w, r, http.StatusBadRequest, httputil.NewErrorResponse(err))
 		return
 	}
 
@@ -82,9 +79,8 @@ func (ac Account) UpdateByID(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ac Account) DeletebyID(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.ParseInt(r.PathValue("id"), 10, 0)
+	id, err := httputil.PathValueInt64(w, r, "id")
 	if err != nil {
-		httputil.WriteJson(w, r, http.StatusBadRequest, httputil.NewErrorResponse(err))
 		return
 	}
 

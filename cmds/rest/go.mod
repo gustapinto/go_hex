@@ -1,11 +1,11 @@
 module github.com/gustapinto/go_hex/cmds/rest
 
-go 1.21.5
+go 1.22.0
 
 replace github.com/gustapinto/go_hex/pkg => ../../pkg
 
 require (
-	github.com/gustapinto/go_hex/internal v0.0.0-20240131184826-adbf08c3bdd8
+	github.com/gustapinto/go_hex/internal v0.0.0-20240206024724-36b1eae3752c
 	github.com/gustapinto/go_hex/pkg v0.0.0-00010101000000-000000000000
 	modernc.org/sqlite v1.28.0
 )
