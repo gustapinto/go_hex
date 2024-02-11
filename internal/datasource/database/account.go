@@ -7,7 +7,8 @@ import (
 	"github.com/gustapinto/go_hex/internal/core/repository"
 )
 
-var _ repository.Account = (*Account)(nil) // Validate interface compliance on compile time
+// Validate interface compliance on compile time
+var _ repository.Account = (*Account)(nil)
 
 type Account struct {
 	db *sql.DB
@@ -19,7 +20,7 @@ func NewAccount(db *sql.DB) Account {
 	}
 }
 
-func (ri Account) GetByID(id int64) (account entity.Account, err error) {
+func (ac Account) GetByID(id int64) (account entity.Account, err error) {
 	query := `
 		SELECT
 			id,
@@ -33,7 +34,7 @@ func (ri Account) GetByID(id int64) (account entity.Account, err error) {
 		WHERE
 			id = $1
 	`
-	row := ri.db.QueryRow(query, id)
+	row := ac.db.QueryRow(query, id)
 
 	if row.Err() != nil {
 		err = row.Err()
@@ -50,7 +51,7 @@ func (ri Account) GetByID(id int64) (account entity.Account, err error) {
 	return
 }
 
-func (ri Account) GetAll() (accounts []entity.Account, err error) {
+func (ac Account) GetAll() (accounts []entity.Account, err error) {
 	query := `
 		SELECT
 			id,
@@ -62,13 +63,14 @@ func (ri Account) GetAll() (accounts []entity.Account, err error) {
 		FROM
 			account a
 	`
-	rows, err := ri.db.Query(query)
+	rows, err := ac.db.Query(query)
 	if err != nil {
 		return
 	}
 
 	for rows.Next() {
 		var account entity.Account
+
 		err = rows.Scan(
 			&account.ID,
 			&account.Name,
@@ -85,7 +87,7 @@ func (ri Account) GetAll() (accounts []entity.Account, err error) {
 	return
 }
 
-func (ri Account) Create(name string, initialValue float64) (id int64, err error) {
+func (ac Account) Create(name string, initialValue float64) (id int64, err error) {
 	query := `
 		INSERT INTO account (
 			name,
@@ -95,15 +97,15 @@ func (ri Account) Create(name string, initialValue float64) (id int64, err error
 			updated_at
 		)
 		VALUES (
-			?,
-			?,
-			?,
+			$1,
+			$2,
+			$3,
 			CURRENT_TIMESTAMP,
 			CURRENT_TIMESTAMP
 		)
 		RETURNING id
 	`
-	row := ri.db.QueryRow(query, name, initialValue, initialValue)
+	row := ac.db.QueryRow(query, name, initialValue, initialValue)
 	if row.Err() != nil {
 		return 0, row.Err()
 	}
@@ -114,53 +116,27 @@ func (ri Account) Create(name string, initialValue float64) (id int64, err error
 	return
 }
 
-func (ri Account) UpdateByID(id int64, name string, currentValue float64) error {
+func (ac Account) UpdateByID(id int64, name string, currentValue float64) error {
 	query := `
 		UPDATE
 			account
 		SET
-			name = ?,
-			current_value = ?
+			name = $1,
+			current_value = $2
 		WHERE
-			id = ?
+			id = $3
 	`
-	_, err := ri.db.Exec(query, name, currentValue, id)
+	_, err := ac.db.Exec(query, name, currentValue, id)
 	return err
 }
 
-func (ri Account) SumToCurrentValueByID(id int64, value float64) error {
-	query := `
-		UPDATE
-			account
-		SET
-			current_value = (current_value + ?)
-		WHERE
-			id = ?
-	`
-	_, err := ri.db.Exec(query, value, id)
-	return err
-}
-
-func (ri Account) SubtractFromCurrentValueByID(id int64, value float64) error {
-	query := `
-		UPDATE
-			account
-		SET
-			current_value = (current_value - ?)
-		WHERE
-			id = ?
-	`
-	_, err := ri.db.Exec(query, value, id)
-	return err
-}
-
-func (ri Account) DeleteByID(id int64) error {
+func (ac Account) DeleteByID(id int64) error {
 	query := `
 		DELETE FROM
 			account
 		WHERE
-			id = ?
+			id = $1
 	`
-	_, err := ri.db.Exec(query, id)
+	_, err := ac.db.Exec(query, id)
 	return err
 }

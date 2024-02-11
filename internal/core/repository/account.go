@@ -12,8 +12,4 @@ type Account interface {
 	UpdateByID(int64, string, float64) error
 
 	DeleteByID(int64) error
-
-	SumToCurrentValueByID(int64, float64) error
-
-	SubtractFromCurrentValueByID(int64, float64) error
 }

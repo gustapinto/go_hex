@@ -28,7 +28,10 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	accountHandler := handler.NewAccount(interactor.NewAccount(database.NewAccount(db)))
+	accountInteractor := interactor.NewAccount(
+		database.NewAccount(db),
+		database.NewTransaction(db))
+	accountHandler := handler.NewAccount(accountInteractor)
 	{
 		mux.HandleFunc("GET /v1/accounts", httputil.Log(accountHandler.Get))
 		mux.HandleFunc("GET /v1/accounts/{id}", httputil.Log(accountHandler.GetByID))
