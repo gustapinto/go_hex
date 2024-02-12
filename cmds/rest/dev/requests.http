@@ -12,7 +12,7 @@ Content-Type: application/json
 
 {
     "name": "Foo",
-    "initial_value": 10
+    "initial_value": 10.0
 }
 ###
 
@@ -22,10 +22,32 @@ Content-Type: application/json
 
 {
     "name": "Foo",
-    "current_value": 5
+    "current_value": 5.0
 }
 ###
 
 # @name DeleteAccountByID
 DELETE http://localhost:8080/v1/accounts/1
+###
+
+# @name GetTransactionsByAccountID
+GET http://localhost:8080/v1/accounts/1/transactions
+###
+
+# @name GetTransactionsByIDAndAccountID
+GET http://localhost:8080/v1/accounts/1/transactions/1
+###
+
+# @name CreateTransaction
+POST http://localhost:8080/v1/accounts/1/transactions
+Content-Type: application/json
+
+{
+    "name": "Sell",
+    "value": 10.0
+}
+###
+
+# @name DeleteTransactionByIDAndAccountID
+DELETE http://localhost:8080/v1/accounts/1/transactions/1
 ###

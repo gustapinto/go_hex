@@ -45,7 +45,7 @@ func (ac Account) Get(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ac Account) GetByID(w http.ResponseWriter, r *http.Request) {
-	id, err := httputil.PathValueInt64(w, r, "id")
+	id, err := httputil.PathValueInt64(w, r, "accountID")
 	if err != nil {
 		return
 	}
@@ -65,7 +65,7 @@ func (ac Account) UpdateByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := httputil.PathValueInt64(w, r, "id")
+	id, err := httputil.PathValueInt64(w, r, "accountID")
 	if err != nil {
 		return
 	}
@@ -75,11 +75,11 @@ func (ac Account) UpdateByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	httputil.WriteStatusCode(w, r, http.StatusNoContent)
 }
 
 func (ac Account) DeletebyID(w http.ResponseWriter, r *http.Request) {
-	id, err := httputil.PathValueInt64(w, r, "id")
+	id, err := httputil.PathValueInt64(w, r, "accountID")
 	if err != nil {
 		return
 	}
@@ -89,5 +89,79 @@ func (ac Account) DeletebyID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	httputil.WriteStatusCode(w, r, http.StatusNoContent)
+}
+
+func (ac Account) CreateTransaction(w http.ResponseWriter, r *http.Request) {
+	var req request.CreateTransaction
+	if err := httputil.BindJson(w, r, &req); err != nil {
+		return
+	}
+
+	accountID, err := httputil.PathValueInt64(w, r, "accountID")
+	if err != nil {
+		return
+	}
+
+	id, err := ac.interactor.CreateTransaction(accountID, req.Name, req.Value)
+	if err != nil {
+		httputil.WriteJson(w, r, http.StatusBadRequest, httputil.NewErrorResponse(err))
+		return
+	}
+
+	httputil.WriteJson(w, r, http.StatusCreated, httputil.NewCreatedResponse(id))
+}
+
+func (ac Account) GetTransactionsByAccountID(w http.ResponseWriter, r *http.Request) {
+	accountID, err := httputil.PathValueInt64(w, r, "accountID")
+	if err != nil {
+		return
+	}
+
+	transactions, err := ac.interactor.GetTransactionsByAccountID(accountID)
+	if err != nil {
+		httputil.WriteJson(w, r, http.StatusBadRequest, httputil.NewErrorResponse(err))
+		return
+	}
+
+	httputil.WriteJson(w, r, http.StatusCreated, response.NewTransactionSliceFromEntity(transactions))
+}
+
+func (ac Account) GetTransactionByIDAndAccountID(w http.ResponseWriter, r *http.Request) {
+	accountID, err := httputil.PathValueInt64(w, r, "accountID")
+	if err != nil {
+		return
+	}
+
+	transactionID, err := httputil.PathValueInt64(w, r, "transactionID")
+	if err != nil {
+		return
+	}
+
+	transaction, err := ac.interactor.GetTransactionByIDAndAccountID(transactionID, accountID)
+	if err != nil {
+		httputil.WriteJson(w, r, http.StatusBadRequest, httputil.NewErrorResponse(err))
+		return
+	}
+
+	httputil.WriteJson(w, r, http.StatusCreated, response.NewTransactionFromEntity(transaction))
+}
+
+func (ac Account) DeleteTransactionByIDAndAccountID(w http.ResponseWriter, r *http.Request) {
+	accountID, err := httputil.PathValueInt64(w, r, "accountID")
+	if err != nil {
+		return
+	}
+
+	transactionID, err := httputil.PathValueInt64(w, r, "transactionID")
+	if err != nil {
+		return
+	}
+
+	if err = ac.interactor.DeleteTransaction(transactionID, accountID); err != nil {
+		httputil.WriteJson(w, r, http.StatusBadRequest, httputil.NewErrorResponse(err))
+		return
+	}
+
+	httputil.WriteStatusCode(w, r, http.StatusNoContent)
 }

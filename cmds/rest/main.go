@@ -7,9 +7,9 @@ import (
 	"os"
 
 	"github.com/gustapinto/go_hex/cmds/rest/handler"
+	"github.com/gustapinto/go_hex/cmds/rest/middleware"
 	"github.com/gustapinto/go_hex/internal/datasource/database"
 	"github.com/gustapinto/go_hex/internal/interactor"
-	"github.com/gustapinto/go_hex/pkg/httputil"
 	_ "modernc.org/sqlite"
 )
 
@@ -28,21 +28,27 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	accountInteractor := interactor.NewAccount(
-		database.NewAccount(db),
-		database.NewTransaction(db))
+	accountRepository := database.NewAccount(db)
+	transactionRepository := database.NewTransaction(db)
+	accountInteractor := interactor.NewAccount(accountRepository, transactionRepository)
 	accountHandler := handler.NewAccount(accountInteractor)
 	{
-		mux.HandleFunc("GET /v1/accounts", httputil.Log(accountHandler.Get))
-		mux.HandleFunc("GET /v1/accounts/{id}", httputil.Log(accountHandler.GetByID))
-		mux.HandleFunc("POST /v1/accounts", httputil.Log(accountHandler.Create))
-		mux.HandleFunc("PUT /v1/accounts/{id}", httputil.Log(accountHandler.UpdateByID))
-		mux.HandleFunc("DELETE /v1/accounts/{id}", httputil.Log(accountHandler.DeletebyID))
+		mux.HandleFunc("GET /v1/accounts", accountHandler.Get)
+		mux.HandleFunc("GET /v1/accounts/{accountID}", accountHandler.GetByID)
+		mux.HandleFunc("POST /v1/accounts", accountHandler.Create)
+		mux.HandleFunc("PUT /v1/accounts/{accountID}", accountHandler.UpdateByID)
+		mux.HandleFunc("DELETE /v1/accounts/{accountID}", accountHandler.DeletebyID)
+		mux.HandleFunc("GET /v1/accounts/{accountID}/transactions", accountHandler.GetTransactionsByAccountID)
+		mux.HandleFunc("GET /v1/accounts/{accountID}/transactions/{transactionID}", accountHandler.GetTransactionByIDAndAccountID)
+		mux.HandleFunc("POST /v1/accounts/{accountID}/transactions", accountHandler.CreateTransaction)
+		mux.HandleFunc("DELETE /v1/accounts/{accountID}/transactions/{transactionID}", accountHandler.DeleteTransactionByIDAndAccountID)
 	}
 
 	slog.Info("Starting HTTP server", "address", ServerAddress)
 
-	err = http.ListenAndServe(ServerAddress, mux)
+	muxWithLogger := middleware.WrapWithLogger(mux)
+
+	err = http.ListenAndServe(ServerAddress, muxWithLogger)
 	if err != nil {
 		slog.Error("Failed to start http server", "error", err.Error())
 		os.Exit(1)

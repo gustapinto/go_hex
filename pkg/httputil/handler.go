@@ -33,23 +33,24 @@ func BindJson(w http.ResponseWriter, r *http.Request, target any) error {
 	return nil
 }
 
-func WriteJson(w http.ResponseWriter, r *http.Request, successStatusCode int, response any) {
+func WriteJson(w http.ResponseWriter, r *http.Request, code int, response any) {
 	w.Header().Add(ContentTypeHeader, ContentTypeApplicationJson)
 
 	jsonResponse, err := json.Marshal(&response)
 	if err != nil {
-		ctx := context.WithValue(r.Context(), StatusCodeKey, http.StatusInternalServerError)
-		*r = *(r.WithContext(ctx))
-
-		w.WriteHeader(http.StatusInternalServerError)
+		WriteStatusCode(w, r, http.StatusInternalServerError)
 		return
 	}
 
-	ctx := context.WithValue(r.Context(), StatusCodeKey, successStatusCode)
+	WriteStatusCode(w, r, code)
+	w.Write(jsonResponse)
+}
+
+func WriteStatusCode(w http.ResponseWriter, r *http.Request, code int) {
+	ctx := context.WithValue(r.Context(), StatusCodeKey, code)
 	*r = *(r.WithContext(ctx))
 
-	w.WriteHeader(successStatusCode)
-	w.Write(jsonResponse)
+	w.WriteHeader(code)
 }
 
 func PathValueInt64(w http.ResponseWriter, r *http.Request, name string) (value int64, err error) {

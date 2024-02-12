@@ -29,7 +29,7 @@ func (tr Transaction) GetByIDAndAccountID(id, accountID int64) (transaction enti
 			value,
 			created_at
 		FROM
-			transaction
+			account_transaction
 		WHERE
 			id = $1
 			AND account_id = $2
@@ -60,7 +60,7 @@ func (tr Transaction) GetAllByAccountID(accountID int64) (transactions []entity.
 			value,
 			created_at
 		FROM
-			transaction
+			account_transaction
 		WHERE
 			account_id = $1
 	`
@@ -89,7 +89,7 @@ func (tr Transaction) GetAllByAccountID(accountID int64) (transactions []entity.
 
 func (tr Transaction) CreateByAccountID(accountID int64, value float64, name string) (id int64, err error) {
 	query := `
-		INSERT INTO transaction (
+		INSERT INTO account_transaction (
 			name,
 			account_id,
 			value,
@@ -117,7 +117,7 @@ func (tr Transaction) CreateByAccountID(accountID int64, value float64, name str
 func (tr Transaction) DeleteByIDAndAccountID(id, accountID int64) error {
 	query := `
 		DELETE FROM
-			transaction
+			account_transaction
 		WHERE
 			id = $1
 			AND account_id = $2

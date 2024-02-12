@@ -7,6 +7,5 @@ const (
 
 	ContentTypeHeader          = "Content-Type"
 	ContentTypeApplicationJson = "application/json"
-
-	StatusCodeKey = "StatusCode"
+	StatusCodeKey              = "StatusCode"
 )

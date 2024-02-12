@@ -195,5 +195,13 @@ func (in Account) DeleteTransaction(id, accountID int64) error {
 		return err
 	}
 
+	if err := in.transactionRepository.DeleteByIDAndAccountID(id, accountID); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return fmt.Errorf(ErrTransactionNotFound)
+		}
+
+		return fmt.Errorf(ErrTransactionInternal, err.Error())
+	}
+
 	return nil
 }
