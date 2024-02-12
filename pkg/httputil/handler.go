@@ -8,6 +8,16 @@ import (
 	"strings"
 )
 
+const (
+	ErrorJsonMarshalFailed             = "error.json.marshal.failed"
+	ErrorJsonDecodeFailed              = "error.json.decode.failed"
+	ErrorContentTypeNotApplicationJson = "error.content.type.not.application.json"
+
+	ContentTypeHeader          = "Content-Type"
+	ContentTypeApplicationJson = "application/json"
+	StatusCodeKey              = "StatusCode"
+)
+
 func BindJson(w http.ResponseWriter, r *http.Request, target any) error {
 	contentType := r.Header.Get(ContentTypeHeader)
 
