@@ -26,6 +26,12 @@ func main() {
 		os.Exit(1)
 	}
 
+	migration := database.NewMigration(db)
+	if err := migration.Up(); err != nil {
+		slog.Error("Failed to run migration", "error", err.Error())
+		os.Exit(1)
+	}
+
 	mux := http.NewServeMux()
 
 	accountRepository := database.NewAccount(db)
