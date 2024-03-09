@@ -12,3 +12,12 @@ type Account struct {
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 }
+
+func (a Account) IsZero() bool {
+	return a.ID == 0 &&
+		a.Name == "" &&
+		a.InitialValue == 0.0 &&
+		a.CurrentValue == 0.0 &&
+		a.CreatedAt.IsZero() &&
+		a.UpdatedAt.IsZero()
+}

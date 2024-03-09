@@ -2,7 +2,10 @@ module github.com/gustapinto/go_hex/cmds/rest
 
 go 1.22.0
 
-replace github.com/gustapinto/go_hex/pkg => ../../pkg
+replace (
+	github.com/gustapinto/go_hex/pkg => ../../pkg
+	github.com/gustapinto/go_hex/internal => ../../internal
+)
 
 require (
 	github.com/gustapinto/go_hex/internal v0.0.0-20240206024724-36b1eae3752c

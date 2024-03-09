@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option go_package = "github.com/gustapinto/go_hex/cmds/grpc/gen";
+
+message CreatedResponse {
+    int64 id = 1;
+}
+
+message Empty {}

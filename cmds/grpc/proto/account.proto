@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+import "shared.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/gustapinto/go_hex/cmds/grpc/gen";
+
+service AccountService {
+    rpc Create(CreateAccountRequest) returns (CreatedResponse);
+    rpc UpdateByID(UpdateAccountByIDRequest) returns (Empty);
+    rpc DeleteByID(DeleteAccountByIDRequest) returns (Empty);
+    rpc GetByID(GetAccountByIDRequest) returns (AccountResponse);
+    rpc GetAll(Empty) returns (RepeatedAccountResponse);
+}
+
+message CreateAccountRequest {
+    string name = 1;
+    double inital_value = 2;
+}
+
+message UpdateAccountByIDRequest {
+    int64 id = 1;
+    string name = 2;
+    double current_value = 3;
+}
+
+message DeleteAccountByIDRequest {
+    int64 id = 1;
+}
+
+message GetAccountByIDRequest {
+    int64 id = 1;
+}
+
+message AccountResponse {
+    int64 id = 1;
+    string name = 2;
+    double initial_value = 3;
+    double current_value = 4;
+    google.protobuf.Timestamp created_at = 5;
+    google.protobuf.Timestamp updated_at = 6;
+}
+
+message RepeatedAccountResponse {
+    repeated AccountResponse accounts = 1;
+}
