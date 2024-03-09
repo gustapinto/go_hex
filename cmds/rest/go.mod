@@ -3,8 +3,8 @@ module github.com/gustapinto/go_hex/cmds/rest
 go 1.22.0
 
 replace (
-	github.com/gustapinto/go_hex/pkg => ../../pkg
 	github.com/gustapinto/go_hex/internal => ../../internal
+	github.com/gustapinto/go_hex/pkg => ../../pkg
 )
 
 require (
