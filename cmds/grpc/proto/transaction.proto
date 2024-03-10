@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+import "shared.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/gustapinto/go_hex/cmds/grpc/gen";
+
+service TransactionService {
+    rpc Create(CreateTransactionRequest) returns (CreatedResponse);
+    rpc DeleteByIDAndAccountID(DeleteTransactionByIDAndAccountIDRequest) returns (Empty);
+    rpc GetByAccountID(GetTransactionByAccountIDRequest) returns (RepeatedTransactionResponse);
+    rpc GetByIdAndAccountId(GetTransactionByIDAndAccountIDRequest) returns (TransactionResponse);
+}
+
+message CreateTransactionRequest {
+    int64 account_id = 1;
+    string name = 2;
+    double value = 3;
+}
+
+message GetTransactionByAccountIDRequest {
+    int64 account_id = 1;
+}
+
+message GetTransactionByIDAndAccountIDRequest {
+    int64 id = 1;
+    int64 account_id = 2;
+}
+
+message DeleteTransactionByIDAndAccountIDRequest {
+    int64 id = 1;
+    int64 account_id = 2;
+}
+
+message TransactionResponse {
+    int64 id = 1;
+    int64 account_id = 2;
+    string name = 3;
+    double value = 4;
+    google.protobuf.Timestamp created_at = 5;
+}
+
+message RepeatedTransactionResponse {
+    repeated TransactionResponse transactions = 1;
+}

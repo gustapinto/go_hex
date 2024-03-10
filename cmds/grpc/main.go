@@ -7,10 +7,14 @@ import (
 	"os"
 
 	"github.com/gustapinto/go_hex/cmds/grpc/gen"
+	"github.com/gustapinto/go_hex/cmds/grpc/interceptor"
 	"github.com/gustapinto/go_hex/cmds/grpc/server"
 	"github.com/gustapinto/go_hex/internal/datasource/database"
 	"github.com/gustapinto/go_hex/internal/interactor"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
+
+	_ "modernc.org/sqlite"
 )
 
 const (
@@ -39,13 +43,23 @@ func main() {
 	}
 	defer listener.Close()
 
-	grpcServer := grpc.NewServer()
-
 	accountRepository := database.NewAccount(db)
 	transactionRepository := database.NewTransaction(db)
 	accountInteractor := interactor.NewAccount(accountRepository, transactionRepository)
 	accountServer := server.NewAccount(accountInteractor)
+	transactionServer := server.NewTransaction(accountInteractor)
+
+	grpcServer := grpc.NewServer(
+		grpc.ChainUnaryInterceptor(interceptor.Log),
+	)
 	gen.RegisterAccountServiceServer(grpcServer, &accountServer)
+	gen.RegisterTransactionServiceServer(grpcServer, &transactionServer)
+
+	slog.Info("Starting gRPC server", "address", ServerAddress)
+
+	reflection.Register(grpcServer)
+
+	slog.Info("Added reflection to gRPC Server")
 
 	if err := grpcServer.Serve(listener); err != nil {
 		slog.Error("Failed to attach gRPC server", "error", err.Error())

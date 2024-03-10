@@ -82,7 +82,9 @@ func (a *Account) GetAll(_ context.Context, _ *gen.Empty) (res *gen.RepeatedAcco
 	}
 
 	for _, account := range accounts {
-		res.Accounts = append(res.Accounts, a.convertAccountToAccountResponse(account))
+		res.Accounts = append(
+			res.Accounts,
+			a.convertAccountToAccountResponse(account))
 	}
 	return
 }
