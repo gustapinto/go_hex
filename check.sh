@@ -4,7 +4,6 @@ MODULE_PATHS=(
     "$BASE_PATH/cmds/rest"
     "$BASE_PATH/cmds/grpc"
     "$BASE_PATH/internal"
-    "$BASE_PATH/pkg"
 )
 
 for MODULE_PATH in "${MODULE_PATHS[@]}";

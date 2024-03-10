@@ -1,4 +1,4 @@
-package httputil
+package response
 
 type ErrorResponse struct {
 	Err string `json:"error"`

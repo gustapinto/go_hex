@@ -1,4 +1,4 @@
-package httputil
+package handler
 
 import (
 	"context"
@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/gustapinto/go_hex/cmds/rest/dto/response"
 )
 
 const (
@@ -22,7 +24,7 @@ func BindJson(w http.ResponseWriter, r *http.Request, target any) error {
 	contentType := r.Header.Get(ContentTypeHeader)
 
 	if !strings.Contains(contentType, ContentTypeApplicationJson) {
-		err := ErrorResponse{
+		err := response.ErrorResponse{
 			Err: ErrorContentTypeNotApplicationJson,
 		}
 
@@ -32,7 +34,7 @@ func BindJson(w http.ResponseWriter, r *http.Request, target any) error {
 
 	err := json.NewDecoder(r.Body).Decode(&target)
 	if err != nil {
-		err = ErrorResponse{
+		err = response.ErrorResponse{
 			Err: ErrorJsonDecodeFailed,
 		}
 
@@ -66,7 +68,7 @@ func WriteStatusCode(w http.ResponseWriter, r *http.Request, code int) {
 func PathValueInt64(w http.ResponseWriter, r *http.Request, name string) (value int64, err error) {
 	value, err = strconv.ParseInt(r.PathValue(name), 10, 0)
 	if err != nil {
-		WriteJson(w, r, http.StatusBadRequest, NewErrorResponse(err))
+		WriteJson(w, r, http.StatusBadRequest, response.NewErrorResponse(err))
 	}
 	return
 }

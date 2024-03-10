@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gustapinto/go_hex/pkg/httputil"
+	"github.com/gustapinto/go_hex/cmds/rest/handler"
 )
 
 type Logger struct {
@@ -23,7 +23,7 @@ func (l *Logger) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	l.handler.ServeHTTP(w, r)
 
-	statusCode := r.Context().Value(httputil.StatusCodeKey)
+	statusCode := r.Context().Value(handler.StatusCodeKey)
 
 	slog.Info("", "method", r.Method, "code", statusCode, "path", r.URL.Path, "agent", r.UserAgent(), "duration", time.Since(start))
 }
