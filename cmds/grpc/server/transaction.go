@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"errors"
 
 	"github.com/gustapinto/go_hex/cmds/grpc/gen"
 	"github.com/gustapinto/go_hex/internal/core/entity"
@@ -24,12 +23,12 @@ func NewTransaction(interactor interactor.Account) Transaction {
 
 func (t *Transaction) Create(_ context.Context, req *gen.CreateTransactionRequest) (res *gen.CreatedResponse, err error) {
 	if req == nil {
-		return nil, errors.New(ERR_EMPTY_REQUEST)
+		return nil, ErrEmptyRequest()
 	}
 
 	id, err := t.interactor.CreateTransaction(req.AccountId, req.Name, req.Value)
 	if err != nil {
-		return
+		return nil, ErrInternal(err)
 	}
 
 	res = &gen.CreatedResponse{
@@ -40,11 +39,15 @@ func (t *Transaction) Create(_ context.Context, req *gen.CreateTransactionReques
 
 func (t *Transaction) DeleteByIDAndAccountID(_ context.Context, req *gen.DeleteTransactionByIDAndAccountIDRequest) (_ *gen.Empty, err error) {
 	if req == nil {
-		return nil, errors.New(ERR_EMPTY_REQUEST)
+		return nil, ErrEmptyRequest()
 	}
 
 	err = t.interactor.DeleteTransaction(req.Id, req.AccountId)
-	return
+	if err != nil {
+		return nil, ErrInternal(err)
+	}
+
+	return nil, nil
 }
 
 func (*Transaction) convertTransactionToTransactionResponse(transaction entity.Transaction) *gen.TransactionResponse {
@@ -63,12 +66,12 @@ func (*Transaction) convertTransactionToTransactionResponse(transaction entity.T
 
 func (t *Transaction) GetByAccountID(_ context.Context, req *gen.GetTransactionByAccountIDRequest) (res *gen.RepeatedTransactionResponse, err error) {
 	if req == nil {
-		return nil, errors.New(ERR_EMPTY_REQUEST)
+		return nil, ErrEmptyRequest()
 	}
 
 	transactions, err := t.interactor.GetTransactionsByAccountID(req.AccountId)
 	if err != nil {
-		return
+		return nil, ErrInternal(err)
 	}
 
 	res = &gen.RepeatedTransactionResponse{
@@ -85,12 +88,12 @@ func (t *Transaction) GetByAccountID(_ context.Context, req *gen.GetTransactionB
 
 func (t *Transaction) GetByIdAndAccountId(_ context.Context, req *gen.GetTransactionByIDAndAccountIDRequest) (res *gen.TransactionResponse, err error) {
 	if req == nil {
-		return nil, errors.New(ERR_EMPTY_REQUEST)
+		return nil, ErrEmptyRequest()
 	}
 
 	transaction, err := t.interactor.GetTransactionByIDAndAccountID(req.Id, req.AccountId)
 	if err != nil {
-		return
+		return nil, ErrInternal(err)
 	}
 
 	res = t.convertTransactionToTransactionResponse(transaction)

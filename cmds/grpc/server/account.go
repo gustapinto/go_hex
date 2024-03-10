@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"errors"
 
 	"github.com/gustapinto/go_hex/cmds/grpc/gen"
 	"github.com/gustapinto/go_hex/internal/core/entity"
@@ -24,12 +23,12 @@ func NewAccount(interactor interactor.Account) Account {
 
 func (a *Account) Create(_ context.Context, req *gen.CreateAccountRequest) (res *gen.CreatedResponse, err error) {
 	if req == nil {
-		return nil, errors.New(ERR_EMPTY_REQUEST)
+		return nil, ErrEmptyRequest()
 	}
 
 	id, err := a.interactor.Create(req.Name, req.InitalValue)
 	if err != nil {
-		return
+		return nil, ErrInternal(err)
 	}
 
 	res = &gen.CreatedResponse{
@@ -40,7 +39,7 @@ func (a *Account) Create(_ context.Context, req *gen.CreateAccountRequest) (res 
 
 func (a *Account) UpdateByID(_ context.Context, req *gen.UpdateAccountByIDRequest) (res *gen.Empty, err error) {
 	if req == nil {
-		return nil, errors.New(ERR_EMPTY_REQUEST)
+		return nil, ErrEmptyRequest()
 	}
 
 	err = a.interactor.UpdateByID(req.Id, req.Name, req.CurrentValue)
@@ -49,11 +48,15 @@ func (a *Account) UpdateByID(_ context.Context, req *gen.UpdateAccountByIDReques
 
 func (a *Account) DeleteByID(_ context.Context, req *gen.DeleteAccountByIDRequest) (res *gen.Empty, err error) {
 	if req == nil {
-		return nil, errors.New(ERR_EMPTY_REQUEST)
+		return nil, ErrEmptyRequest()
 	}
 
 	err = a.interactor.DeleteByID(req.Id)
-	return
+	if err != nil {
+		return nil, ErrInternal(err)
+	}
+
+	return nil, nil
 }
 
 func (*Account) convertAccountToAccountResponse(account entity.Account) *gen.AccountResponse {
@@ -74,7 +77,7 @@ func (*Account) convertAccountToAccountResponse(account entity.Account) *gen.Acc
 func (a *Account) GetAll(_ context.Context, _ *gen.Empty) (res *gen.RepeatedAccountResponse, err error) {
 	accounts, err := a.interactor.GetAll()
 	if err != nil {
-		return
+		return nil, ErrInternal(err)
 	}
 
 	res = &gen.RepeatedAccountResponse{
@@ -91,12 +94,12 @@ func (a *Account) GetAll(_ context.Context, _ *gen.Empty) (res *gen.RepeatedAcco
 
 func (a *Account) GetByID(_ context.Context, req *gen.GetAccountByIDRequest) (res *gen.AccountResponse, err error) {
 	if req == nil {
-		return nil, errors.New(ERR_EMPTY_REQUEST)
+		return nil, ErrEmptyRequest()
 	}
 
 	account, err := a.interactor.GetByID(req.Id)
 	if err != nil {
-		return
+		return nil, ErrInternal(err)
 	}
 
 	res = a.convertAccountToAccountResponse(account)
