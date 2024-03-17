@@ -18,6 +18,7 @@ A arquitetura hexagonal é uma arquitetura de *software* que prega o desacoplame
 ### Pré-requisitos
 
 1. Go 1.22 ou mais recente
+2. Compilador para [*protocol buffers*](https://grpc.io/docs/protoc-installation/) e das dependências do mesmo para Go e gRPC
 
 ### Executando a API REST (cmds/rest)
 
@@ -25,3 +26,11 @@ A arquitetura hexagonal é uma arquitetura de *software* que prega o desacoplame
 2. Navegue até o diretório `go_hex/cmds/rest`
 3. Em um terminal execute o comando `go run .`
 4. Pronto! :rocket:
+
+### Executando o servidor gRPC (cmds/grpc)
+
+1. Clone esse repositório
+2. Navegue até o diretório `go_hex/cmds/grpc`
+3. (Opcional) Gere novo código para o projeto usando o script `./dev/gen/sh`
+4. Em um terminal execute o comando `go run .`
+5. Pronto! :rocket:

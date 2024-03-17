@@ -5,7 +5,6 @@ go 1.22.0
 replace github.com/gustapinto/go_hex/internal => ../../internal
 
 require (
-	github.com/golang/protobuf v1.5.4
 	github.com/gustapinto/go_hex/internal v0.0.0-00010101000000-000000000000
 	google.golang.org/grpc v1.62.1
 	google.golang.org/protobuf v1.33.0
@@ -14,6 +13,7 @@ require (
 
 require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
+	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
